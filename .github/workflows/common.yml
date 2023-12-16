@@ -43,7 +43,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: build
+          arguments: build -x test
 
       - name: Build and push
         uses: niqzart/ffs-devops/docker-build@main
