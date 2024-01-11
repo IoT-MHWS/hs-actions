@@ -76,6 +76,5 @@ jobs:
           script: |-
             cd ~/hs
             sudo docker compose pull ${{ github.event.repository.name }}
-            sudo docker compose up -d
-            sudo docker image prune -af
+            sudo docker compose up -d ${{ github.event.repository.name }}
           script_stop: true
