@@ -54,3 +54,24 @@ jobs:
           tag: ${{ github.ref_name == 'main' && 'latest' || needs.namer.outputs.tag }}
           base-tag: latest
           dockerfile: "./dockerfile"
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    if: github.ref_name == 'main'
+    environment: deploy
+
+    steps:
+      - name: Run SSH commands
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          username: art
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |-
+            cd ~/hs
+            docker compose pull ${{ github.event.repository.name }}
+            docker compose up -d
+            docker image prune -af
+          script_stop: true
