@@ -33,7 +33,7 @@ jobs:
       - name: Checkout project sources
         uses: actions/checkout@v4
 
-      - name: Setup Java & Gradle
+      - name: Setup Java
         uses: actions/setup-java@v2
         with:
           java-version: '17'
@@ -49,10 +49,19 @@ jobs:
       - name: Setup docker
         run: docker-compose up -d
 
-      - name: Build with tests
+      - name: Run tests
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: build
+          arguments: :test --rerun-tasks
+        env:
+          HS_USER_EUREKA_URI: http://localhost:8305/eureka
+          HS_USER_DATASOURCE_PORT: 8302
+          HS_USER_DATASOURCE_USERNAME: postgres
+          HS_USER_JWT_EXPIRATION: 86400000
+          HS_USER_DATASOURCE_HOST: localhost
+          HS_USER_JWT_SECRET_KEY: H3G7wpVdJNA9hsK4zaQm6uCUZqHLg2RFKs7D8M6J9mbf
+          HS_USER_DATASOURCE_PASSWORD: example
+          HS_USER_DATASOURCE_DATABASE: db_user
 
       - name: Store reports
         if: always()
