@@ -54,6 +54,15 @@ jobs:
         with:
           arguments: build
 
+      - name: Store reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: reports
+          path: |
+            **/build/reports/
+            **/build/test-results/
+
       - name: Build & push docker image
         uses: niqzart/ffs-devops/docker-build@main
         with:
