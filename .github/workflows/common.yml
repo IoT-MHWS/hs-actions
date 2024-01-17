@@ -53,13 +53,14 @@ jobs:
         run: docker compose up -d
 
       - name: Run tests
+        if: vars.test_environ
         uses: gradle/gradle-build-action@v2
         with:
           arguments: test jacocoTestReport sonarqube
         env: ${{ fromJSON(vars.test_environ) }}
 
       - name: Store reports
-        if: always()
+        if: always() && vars.test_environ
         uses: actions/upload-artifact@v3
         with:
           name: reports
