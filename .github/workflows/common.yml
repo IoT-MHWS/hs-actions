@@ -15,7 +15,7 @@ jobs:
       - name: Print env
         run: echo "${{ vars.test_environ }}"
 
-      - name: Get tag & branch name
+      - name: Get Branch & Tag
         id: branch_name
         run: |-
           branch=${{ github.ref_name }}
@@ -54,17 +54,17 @@ jobs:
         with:
           arguments: build -x test
 
-      - name: Setup docker
+      - name: Setup Environment
         run: docker compose up -d
 
-      - name: Run tests
+      - name: Run Tests & SonarQube
         if: vars.test_environ
         uses: gradle/gradle-build-action@v2
         with:
           arguments: test jacocoTestReport sonar --info
         env: ${{ fromJSON(vars.test_environ) }}
 
-      - name: Store reports
+      - name: Store Test Reports
         if: always() && vars.test_environ
         uses: actions/upload-artifact@v3
         with:
@@ -73,7 +73,7 @@ jobs:
             **/build/reports/
             **/build/test-results/
 
-      - name: Build & push docker image
+      - name: Build & Push Docker Image
         uses: niqzart/ffs-devops/docker-build@main
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -94,7 +94,7 @@ jobs:
     environment: deploy
 
     steps:
-      - name: Run SSH commands
+      - name: Run SSH Commands
         uses: appleboy/ssh-action@v1.0.0
         with:
           username: art
