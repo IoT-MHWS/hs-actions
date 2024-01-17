@@ -55,7 +55,7 @@ jobs:
       - name: Run tests
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: :test --rerun-tasks
+          arguments: test jacocoTestReport sonarqube
         env: ${{ fromJSON(vars.test_environ) }}
 
       - name: Store reports
