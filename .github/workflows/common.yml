@@ -62,7 +62,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: test jacocoTestReport sonar --info
-        env: ${{ fromJSON(vars.test_environ) }}
+        env: ${{ fromJSON(vars.test_environ || '{}') }}
 
       - name: Store Test Reports
         if: always() && vars.test_environ
