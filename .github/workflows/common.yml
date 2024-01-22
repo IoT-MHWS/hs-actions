@@ -72,6 +72,10 @@ jobs:
       - name: Setup Environment
         run: docker compose up -d
 
+      - name: Environment Logs
+        if: failure()
+        run: docker compose logs -t
+
       - name: Run Tests & SonarQube
         if: vars.test_environ
         uses: gradle/gradle-build-action@v2
