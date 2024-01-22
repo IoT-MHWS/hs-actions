@@ -2,6 +2,10 @@ name: Common Pipeline Steps
 
 on:
   workflow_call:
+    inputs:
+      liquibase:
+        type: boolean
+        default: false
 
 jobs:
   namer:
@@ -40,6 +44,17 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Build And Push Liquibase Docker Image
+        if: inputs.liquibase
+        uses: niqzart/ffs-devops/docker-build@main
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: liquibase-${{ github.event.repository.name }}
+          tag: ${{ github.ref_name == 'main' && 'latest' || needs.namer.outputs.tag }}
+          base-tag: latest
+          dockerfile: "./dockerfile.liquibase"
 
       - name: Setup Java
         uses: actions/setup-java@v2
