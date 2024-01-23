@@ -120,8 +120,5 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |-
-            cd ~/hs
-            sudo docker compose pull ${{ github.event.repository.name }}
-            sudo docker compose up -d ${{ github.event.repository.name }}
+          script: microk8s kubectl rollout restart deployment/${{ github.event.repository.name }}
           script_stop: true
